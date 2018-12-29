@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>插叙会议</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+      <style>
+          body{
+              width: 100%;
+          }
+          #header {
+            width: 100%;
+            height: 4rem;
+            background: rgb(14, 144, 210);
+            text-align: center;
+          }
+          #header span {
+            position: relative;
+            font-size: 1.2rem;
+            padding-top: 1.5rem;
+          }
+          /*left*/
+          .left {
+            position: relative;
+            left: -5rem;
+          }
+          /*li 区高度问题*/
+          .mui-table-view-cell {
+            height: 4rem;
+          }
+          #input {
+            float: right;
+          }
+          #order {
+            width: 100%;
+            background-color: white;
+          }
+          /*预定按钮*/
+          #orderButton {
+            position: relative;
+            /*top: 1rem;*/
+            left: 10%;
+            width: 80%;
+          }
+          /*选择会议室编号*/
+          .selectNum {
+            /*用div的样式代替select的样式*/
+           width: 200px;
+           height: 40px;
+           border-radius: 5px;
+           /*盒子阴影修饰作用,自己随意*/
+           box-shadow: 0 0 5px #ccc;
+           position: relative;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="header" >
+      <span class="left" onclick="back()"><img src="../image/myBack1.png" /></span>
+      <span style="color:white;">智能会议管理系统</span>
+    </div>
+    <div id="content">
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell" onclick="selectMeeting()">
+          <span id="meeting">会议室编号:</span>
+          <span id="NumValue"></span>
+        </li>
+        <li class="mui-table-view-cell">
+          <label>日期:</label>
+          <input type="date" id="input" class="inputDate"  style="width:60%;" value="" placeholder="请输入会议日期" />
+        </li>
+        <li class="mui-table-view-cell">
+          <label>开始时间:</label>
+          <input type="time" id="input" class="inputStart" style="width:60%;" value="" placeholder="请输入会议开始时间" />
+        </li>
+        <li class="mui-table-view-cell">
+          <label>结束时间:</label>
+          <input type="time" id="input" class="inputEnd" style="width:60%;" value="" placeholder="请输入会议结束时间" />
+        </li>
+
+      </ul>
+    </div>
+    <div id="order">
+      <button type="button" id="orderButton" class="mui-btn mui-btn-primary" onclick="searchMeeting()">查询</button>
+    </div>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript" src="../script/jquery-3.3.1.js"></script>
+  <script type="text/javascript" src="../script/common.js"></script>
+  <script type="text/javascript">
+      apiready = async function(){
+          var meeting;
+          getMeetingInfo(api.pageParam.roomId);
+          getAuthorization();
+          this.meeting = await getAllMeeting();
+          console.log(makeMeetingArray(this.meeting));
+      };
+      //处理会议数组;
+      function makeMeetingArray(arr){
+        var newarr1 = [];
+        for(var i = 0; i < arr.length; i++) {
+          newarr1.push({"text":arr[i].id});
+        }
+        return newarr1;
+      };
+      //获取所有会议室;
+      async function getAllMeeting(){
+        let ret = await  ajax({
+            url: srchttp+'/api/room/selectAll',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization':api.getGlobalData({  key:"status" })
+            },
+            method: 'get',
+        });
+        console.log("meeting" + JSON.stringify(ret.data));
+        return ret.data;
+      };
+      //预定会议室下拉框;
+      function selectMeeting(){
+         var UIMultiSelector = api.require('UIMultiSelector');
+         UIMultiSelector.open({
+           rect: {
+               h: 244
+           },
+           text: {
+               title: '选择会议室编号',
+               leftBtn: '取消',
+               rightBtn: '确定'
+           },
+           max: 0,
+           singleSelection: true,
+           styles: {
+               mask: 'rgba(0,0,0,0)',
+               title: {
+                   bg: 'rgb(0,64,128)',
+                   color: 'rgb(184,209,5)',
+                   size: 16,
+                   h: 44
+               },
+               leftButton: {
+                   w: 80,
+                   h: 35,
+                   marginT: 5,
+                   marginL: 8,
+                   color: 'rgb(0,0,0)',
+                   size: 14
+               },
+               rightButton: {
+                   w: 80,
+                   h: 35,
+                   marginT: 5,
+                   marginR: 8,
+                   color: 'rgb(14, 144, 210)',
+                   size: 14
+               },
+               item: {
+                   h: 35,
+                   bg: '#f2f2f2',
+                   bgActive: 'rgb(43,213,166)',
+                   bgHighlight: 'rgb(238,17,150)',
+                   color: 'rgb(22,112,233)',
+                   active: 'rgb(201,118,126)',
+                   highlight: 'rgb(255,255,0)',
+                   size: 14,
+                   lineColor: 'rgb(78,57,255)',
+                   textAlign: 'center'
+               },
+               icon: {
+                   w: 20,
+                   h: 20,
+                   marginT: 11,
+                   marginH: 8,
+                   bg: '#fff',
+                   align: 'left'
+               }
+           },
+           animation: true,
+           items: makeMeetingArray(this.meeting),
+       }, function(ret, err) {
+           if (ret.eventType == 'clickMask') {
+               UIMultiSelector.hide();
+           } else {
+               if(ret.eventType == 'clickRight'){
+                  $("#NumValue").text(ret.items[0].text);
+                  console.log(JSON.stringify(ret.items[0].text));
+                  UIMultiSelector.hide();
+               }else if(ret.eventType == 'clickLeft'){
+                 UIMultiSelector.hide();
+               }
+           }
+       });
+      };
+      //返回
+      function back(){
+        api.closeWin({
+            name: 'orderMeeting'
+        });
+      };
+      function getMeetingInfo(info){
+        $("#meetingNum").append(info);
+      };
+      //查询会议
+      function searchMeeting(){
+        if($("#NumValue").text() !== "" && $(".inputDate").val() == ""){
+            api.ajax({
+                url: srchttp+'/api/room/uselectbyid?room='+parseInt($("#NumValue").text()),
+                method: 'get',
+                headers: {
+                   'Content-Type': 'application/json;charset=utf-8',
+                   'Authorization':api.getGlobalData({key:"status"})
+               },
+            },function(ret, err){
+                if (ret.code == 0) {
+                    api.openWin({
+                        name: 'orderResult',
+                        url: './orderResult.html',
+                        pageParam: {
+                            dataNumber: ret.data
+                        }
+                    });
+                } else {
+                    alert("查询失败");
+                }
+            });
+        }else if($("#NumValue").text() == "" && $(".inputDate").val() !== ""){
+            console.log("starttime:"+parseInt(timetostamp($(".inputDate").val() + " " +$(".inputStart").val())));
+            console.log("endtime:"+parseInt(timetostamp($(".inputDate").val() + " " +$(".inputEnd").val())));
+            api.ajax({
+                url: srchttp+'/api/room/selectbytime',
+                method: 'post',
+                headers: {
+                   'Content-Type': 'application/json;charset=utf-8',
+                   'Authorization':api.getGlobalData({key:"status"})
+               },
+                data: {
+                    body:{
+                      starttime:parseInt(timetostamp($(".inputDate").val() + " " +$(".inputStart").val())),
+                      endtime:parseInt(timetostamp($(".inputDate").val() + " " +$(".inputEnd").val()))
+                    }
+                }
+            },function(ret, err){
+                if (ret.code == 0) {
+                    api.openWin({
+                        name: 'orderResult',
+                        url: './orderResult.html',
+                        pageParam: {
+                            dataTime: ret.data
+                        }
+                    });
+                } else {
+                    alert("查询失败");
+                }
+            });
+        }
+      }
+  </script>
+  </html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>首页</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+      <!-- <link rel="stylesheet" type="text/css" href="../css/amazeui.css" /> -->
+      <style>
+          body{
+            background: white;
+            width:100%;
+            height: 100%;
+          }
+
+          #left {
+            position: relative;
+            left: 3rem;
+            width: 10rem;
+          }
+          #right {
+            position: relative;
+            left: 3rem;
+            width: 10rem;
+          }
+          #footer {
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+          }
+          #footer div {
+            /*border:1px solid red;*/
+            display: inline-block;
+            text-align: center;
+            color: white;
+            background-color: #e16531;
+            height: 3.5rem;
+          }
+          #header {
+            width: 100%;
+            height: 4rem;
+            background: rgb(14, 144, 210);
+            text-align: center;
+          }
+          #header span {
+            position: relative;
+            font-size: 1.2rem;
+            padding-top: 1.5rem;
+          }
+          /* 按钮组*/
+          #menuGroup {
+            width: 100%;
+            height: 4rem;
+          }
+          #menuGroup div {
+            display: inline-block;
+            height: 100%;
+            text-align: center;
+          }
+          #button1 {
+            margin-left: 0.5%;
+            width: 49%;
+            color: white;
+            background-color: #0894ec;
+          }
+          #button2 {
+            margin-left: 0rem;
+            width: 49%;
+            color: white;
+            background-color: #f60;
+          }
+          /*页脚区*/
+          #footer {
+            position: fixed;
+            bottom: 0px;
+            width:100%;
+            height: 3rem;
+            background-color: #c8c9cb;
+          }
+          #footer span {
+            display: inline-block;
+            width: 24%;
+            text-align: center;
+            color: blue;
+            position: relative;
+            top: 0rem;
+            font-size: 0.8rem;
+          }
+          .left {
+            border-right: 1px #e7e7e7 solid;
+          }
+          /*首页会议显示*/
+          #headPerson {
+            margin-top: 1rem;
+            margin-left: 3rem;
+          }
+          #headPerson img {
+            width: 2rem;
+            height: 2rem;
+          }
+
+          /*今日会议div*/
+          #todayMeeting {
+            width: 80%;
+            height: 8rem;
+            margin-left: 10%;
+            border: 2px solid #e3e3e3;
+            border-radius: 5px;
+          }
+          #meetingHead {
+              width: 100%;
+              height: 2rem;
+              border-bottom: 2px solid rgb(14, 144, 210);
+          }
+          .circle {
+            margin-top: 0.8rem;
+            margin-left: 2rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.5rem;
+            border:1px solid #9a9a9a;
+          }
+          #meetingInfo {
+            margin-top: 1rem;
+            margin-left: 10%;
+          }
+      </style>
+  </head>
+  <body>
+  <div id="header" >
+    <span style="color:white;">智能会议管理系统</span>
+  </div>
+  <div class="mui-slider">
+    <div class="mui-slider-group">
+      <div class="mui-slider-item"><a href="#"><img src="../image/meeting1.png" /></a></div>
+      <div class="mui-slider-item"><a href="#"><img src="../image/meeting2.png" /></a></div>
+      <div class="mui-slider-item"><a href="#"><img src="../image/meeting3.png" /></a></div>
+    </div>
+  </div>
+    <!-- 按钮组 -->
+    <div id="content">
+        <div id="headPerson"><img src="../image/todayMeeting.png" alt="" /><span style="position:relative;top:-1rem;padding-left:2rem;">今日会议</span></div>
+        <div id="todayMeeting">
+            <div id="meetingHead"><div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;"> 9:00-11:00</span></div>
+            <div id="meetingInfo">
+              <p>会议主持人:赵小敏</p>
+              <p>会议室编号:123</p>
+              <p>会议主题:重构</p>
+            </div>
+        </div>
+    </div>
+  <div id="footer">
+    <span class="left" onclick="toIndex()"><p><img src="../image/index.png" alt=""></p><p style="position:relative;top:-1rem;color:#0a8ddf;">首页</p></span>
+    <span class="left" onclick="orderMeeting()"><p><img src="../image/index.png" alt=""></p><p style="position:relative;top:-1rem;color:#0a8ddf;">预约</p></span>
+    <span class="left" onclick="seeAllMeeting()"><p><img src="../image/index.png" alt=""></p><p style="position:relative;top:-1rem;color:#0a8ddf;">查看</p></span>
+    <span class="right" onclick="toMine()"><p><img src="../image/mine.png" alt=""></p><p style="position:relative;top:-1rem;color:#0a8ddf;">我的</p></span>
+  </div>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript" src="../script/jquery-3.3.1.js"></script>
+  <script type="text/javascript" src="../script/amazeui.js"></script>
+  <script type="text/javascript" src="../script/mui.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+      function orderMeeting(){
+        if(api.getGlobalData({key:"status"}) ==  null){
+          alert("未登录，请登录");
+          api.openWin({
+              name: 'login',
+              url: './login.html',
+          });
+        }else {
+          api.openWin({
+              name: 'order',
+              url: './order.html',
+          });
+        }
+      };
+      function seeAllMeeting(){
+        api.openWin({
+            name: 'orderMeeting',
+            url: './orderMeeting.html',
+        });
+      };
+      function toIndex(){
+        api.openWin({
+            name: 'index',
+            url: '../html/index.html',
+        });
+      };
+      function toMine(){
+        api.openWin({
+            name: 'user',
+            url: '../html/mine/user.html',
+        });
+      };
+  </script>
+  </html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>我的预定</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- frozen ui -->
+    <!-- <link rel="stylesheet" href="http://i.gtimg.cn/vipstyle/frozenui/2.0.0/css/frozen.css"> -->
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #myheader {
+            width: 100%;
+            height: 6rem;
+            background: rgb(14, 144, 210);
+            text-align: center;
+        }
+
+        #myheader span {
+            position: relative;
+            font-size: 2rem !important;
+            padding-top: 1.5rem;
+        }
+        /*left*/
+
+        .left {
+            position: relative;
+            left: -12rem;
+        }
+        /* 内容区*/
+
+        #content {
+            margin-top: 2rem;
+        }
+
+        #myTab {
+            display: space-between;
+            position: relative;
+            width: 100%;
+        }
+
+        #myTab li {
+            width: 33%;
+        }
+        /*审核中table*/
+
+        #notTable,
+        #DoneTable,
+        #refuseTable {
+            border: 1px solid #98bf21;
+            margin-left: 1rem;
+            border-collapse: collapse;
+        }
+
+        #notTable th,
+        #DoneTable th,
+        #refuseTable th {
+            width: 11rem;
+            text-align: center;
+            background-color: #A7C942;
+        }
+
+        #notTable td,
+        #DoneTable td,
+        #refuseTable td {
+            text-align: center;
+        }
+        /**/
+        /*meeting 样式*/
+
+        #todayMeeting {
+            margin-top: 1rem;
+            width: 80%;
+            height: 19rem !important;
+            margin-left: 10%;
+            border: 2px solid #e3e3e3;
+            border-radius: 5px;
+            color: black;
+        }
+
+        #meetingHead {
+            width: 100%;
+            height: 3rem;
+            border-bottom: 2px solid rgb(14, 144, 210);
+        }
+
+        .circle {
+            margin-top: 0.8rem;
+            margin-left: 2rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #9a9a9a;
+        }
+
+        #meetingInfo {
+            margin-top: 1rem;
+            margin-left: 10%;
+            color: black;
+        }
+        #meetingInfo p {
+          color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="myheader">
+        <span class="left" onclick="back()"><img src="../../image/myBack1.png" /></span>
+        <span style="color:white;">我的预定</span>
+    </div>
+    <!-- <hr /> -->
+    <div id="content">
+        <ul id="myTab" class="nav nav-tabs" style="text-align:center;">
+            <li class="active">
+                <a href="#home" data-toggle="tab" onclick="choose(1)">
+             审核中
+          </a>
+            </li>
+            <li>
+                <a href="#ios" data-toggle="tab" onclick="choose(2)">
+            已通过
+          </a>
+            </li>
+            <li><a href="#jmeter" data-toggle="tab" onclick="choose(3)">已回绝</a></li>
+        </ul>
+
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in active" id="home">
+                <p id="table1">
+                    <div id="todayMeeting">
+                        <div id="meetingHead">
+                            <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;"> 9:00-11:00</span></div>
+                        <div id="meetingInfo">
+                            <p>会议主持人:赵小敏</p>
+                            <p>会议室编号:123</p>
+                            <p>会议主题:重构</p>
+                            <p>邀请码:jijiji</p>
+                        </div>
+                    </div>
+                </p>
+            </div>
+
+            <div class="tab-pane fade" id="ios">
+                <p id="table2">
+                    <div id="todayMeeting">
+                        <div id="meetingHead">
+                            <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;"> 9:00-11:00</span></div>
+                        <div id="meetingInfo">
+                            <p>会议主持人:赵小敏</p>
+                            <p>会议室编号:123</p>
+                            <p>会议主题:重构</p>
+                            <p>邀请码:jijiji</p>
+                        </div>
+                    </div>
+                </p>
+            </div>
+            <div class="tab-pane fade" id="jmeter">
+                <p id="table3">
+                  <div id="todayMeeting">
+                      <div id="meetingHead">
+                          <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;"> 9:00-11:00</span></div>
+                      <div id="meetingInfo">
+                          <p>会议主持人:赵小敏</p>
+                          <p>会议室编号:123</p>
+                          <p>会议主题:重构</p>
+                          <p>邀请码:jijiji</p>
+                      </div>
+                  </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.js"></script>
+<script type="text/javascript" src="../../script/jquery-3.3.1.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+    var page1 = 0;
+    var page2 = 0;
+    var page3 = 0;
+    var pointer; //只是tab换页;
+    function choose(i) {
+        pointer = i;
+        return pointer;
+    }
+    // var table1 = `<table id="notTable" border="1"><tr><th>开始时间</th><th>会议室</th><th>操作</th></tr>`;
+    apiready = function() {
+        getMyorderNot(0);
+        api.setCustomRefreshHeaderInfo({
+            bgColor: '#C0C0C0',
+        }, function() {
+            //下拉刷新被触发，自动进入加载状态，使用 api.refreshHeaderLoadDone() 手动结束加载中状态
+            //下拉刷新被触发，使用 api.refreshHeaderLoadDone() 结束加载中状态
+            if (pointer == 1) {
+                console.log(pointer);
+                getMyorderNot(page1);
+                page1 = page1 + 1;
+            } else if (pointer == 2) {
+                console.log(pointer);
+                getMyorderDone(page2);
+                page2 = page2 + 1;
+            } else if (pointer == 3) {
+                console.log(pointer);
+                getMyorderRefuse(page3);
+                page3 = page3 + 1;
+            }
+            setTimeout(api.refreshHeaderLoadDone(), 5000);
+        });
+        api.addEventListener({
+            name: 'shake'
+        }, function(ret, err) {
+            api.refreshHeaderLoadDone()
+        });
+    };
+    //查看已回绝的会议;
+    function getMyorderRefuse(i) {
+        api.ajax({
+            url: srchttp + '/api/meeting/selectorder',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': api.getGlobalData({
+                    key: "status"
+                })
+            },
+            data: {
+                body: {
+                    page: parseInt(i),
+                    size: 10,
+                    state: 2
+                }
+            }
+        }, function(ret, err) {
+            if (ret.code == 0) {
+                console.log("执行" + JSON.stringify(ret.data));
+                var table3 = "";
+                if (ret.data.length == 0) {
+                    alert("无数据");
+                } else {
+                    for (var i = 0; i < ret.data.length; i++) {
+                      $("#table3").append(`
+                        <div id="todayMeeting">
+                            <div id="meetingHead">
+                                <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;">  ${stampformat(ret.data[i].starttime)}</span></div>
+                            <div id="meetingInfo">
+                                <p>会议主持人:${ret.data[i].originator}</p>
+                                <p>会议室编号:${ret.data[i].room}</p>
+                                <p>会议主题:${ret.data[i].theme}</p>
+                            </div>
+                        </div>
+                      `)
+                //        table3 += `<tr><td>${ret.data[i].starttime}</td><td>${ret.data[i].room}</td><td>查看</td></tr>`
+                    }
+                }
+              //  $("#refuseTable").append(table3);
+            } else {
+                alert("获取失败");
+            }
+        });
+    };
+    //查看已通过会议;
+    function getMyorderDone(i) {
+        api.ajax({
+            url: srchttp + '/api/meeting/selectorder',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': api.getGlobalData({
+                    key: "status"
+                })
+            },
+            data: {
+                body: {
+                    page: parseInt(i),
+                    size: 10,
+                    state: 1
+                }
+            }
+        }, function(ret, err) {
+            if (ret.code == 0) {
+                console.log("执行" + JSON.stringify(ret.data));
+                var table2 = "";
+                if (ret.data.length == 0) {
+                    alert("无数据");
+                } else {
+                    for (var i = 0; i < ret.data.length; i++) {
+                        $("#table2").append(
+                          `  <div id="todayMeeting">
+                                <div id="meetingHead">
+                                      <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;">  ${stampformat(ret.data[i].starttime)}</span></div>
+                                      <div id="meetingInfo">
+                                            <p>会议主持人:${ret.data[i].originator}</p>
+                                            <p>会议室编号:${ret.data[i].room}</p>
+                                            <p>会议主题:${ret.data[i].theme}</p>
+                                            <p>邀请码:${ret.data[i].invitecode}</p>
+                                      </div>
+                              </div>`
+                        )
+                        //table2 += `<tr><td>${ret.data[i].starttime}</td><td>${ret.data[i].endtime}</td><td>${ret.data[i].room}</td></tr>`
+                    }
+                }
+                //$("#DoneTable").append(table2);
+            } else {
+                alert("获取失败");
+            }
+        });
+    };
+    //取消会议：
+    function cancel(id) {
+        api.ajax({
+            url: srchttp + '/api/meeting/cancel?meeting=' + id,
+            method: 'get',
+        }, function(ret, err) {
+            if (ret.code == 0) {
+                alert("取消成功");
+                window.onload();
+            } else {
+                alert("可能因为超过规定的取消时间,导致取消失败");
+            }
+        });
+
+    }
+    //查看我的审核中会议;
+    function getMyorderNot(i) {
+        console.log("page1:" + page1);
+        api.ajax({
+            url: srchttp + '/api/meeting/selectorder',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': api.getGlobalData({
+                    key: "status"
+                })
+            },
+            data: {
+                body: {
+                    page: parseInt(i),
+                    size: 10,
+                    state: 0
+                }
+            }
+        }, function(ret, err) {
+            if (ret.code == 0) {
+                console.log("执行" + JSON.stringify(ret.data));
+                if (ret.data.length == 0) {
+                    alert("无数据");
+                } else {
+                    for (var i = 0; i < ret.data.length; i++) {
+                        //table1 += `<tr><td>${ret.data[i].starttime}</td><td>${ret.data[i].room}</td><td onclick="cancel()">取消</td></tr>`
+                        $("#table1").append(`
+                          <div id="todayMeeting">
+                              <div id="meetingHead">
+                                  <div class="circle" style="display:inline-block;"></div><span style="display:inline-block;padding-left:1rem;"> ${stampformat(ret.data[i].starttime)}</span></div>
+                              <div id="meetingInfo">
+                                  <p>会议主持人:${ret.data[i].originator}</p>
+                                  <p>会议室编号:${ret.data[i].room}</p>
+                                  <p>会议主题:${ret.data[i].theme}</p>
+                                  <p>邀请码:${ret.data[i].invitecode}  <button type="button" style="position:relative;left:3rem;" class="mui-btn mui-btn-warning" onclick="cancel(${ret.data[i].id})">取消</button></p>
+                              </div>
+                          </div>
+                          `);
+                    }
+                }
+                // table1 += `</table>`;
+                //$("#notTable").append(table1);
+            } else {
+                alert("获取失败");
+            }
+        });
+    }
+
+    function back() {
+        api.closeWin({
+            name: 'myOrder'
+        });
+    }
+</script>
+
+</html>

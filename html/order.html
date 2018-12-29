@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>预定会议</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+      <style>
+          body{
+              width: 100%;
+          }
+          #header {
+            width: 100%;
+            height: 4rem;
+            background: rgb(14, 144, 210);
+            text-align: center;
+          }
+          #header span {
+            position: relative;
+            font-size: 1.2rem;
+            padding-top: 1.5rem;
+          }
+          /*left*/
+          .left {
+            position: relative;
+            left: -5rem;
+          }
+          /*li 区高度问题*/
+          .mui-table-view-cell {
+            height: 4rem;
+          }
+          #input {
+            float: right;
+          }
+          #order {
+            width: 100%;
+            background-color: white;
+          }
+          /*预定按钮*/
+          #orderButton {
+            position: relative;
+            /*top: 1rem;*/
+            left: 10%;
+            width: 80%;
+          }
+          /*选择会议室编号*/
+          .selectNum {
+            /*用div的样式代替select的样式*/
+           width: 200px;
+           height: 40px;
+           border-radius: 5px;
+           /*盒子阴影修饰作用,自己随意*/
+           box-shadow: 0 0 5px #ccc;
+           position: relative;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="header" >
+      <span class="left" onclick="back()"><img src="../image/myBack1.png" /></span>
+      <span style="color:white;">智能会议管理系统</span>
+    </div>
+    <div id="content">
+      <ul class="mui-table-view">
+        <li class="mui-table-view-cell" onclick="selectMeeting()">
+          <span id="meeting">会议室编号:</span>
+          <span id="NumValue"></span>
+        </li>
+        <li class="mui-table-view-cell">
+          <label>主题:</label>
+          <input type="text" id="input"  style="width:60%;" value="" placeholder="请输入会议室主题" />
+        </li>
+        <li class="mui-table-view-cell">
+          <label>日期:</label>
+          <input type="date" id="input" class="inputDate"  style="width:60%;" value="" placeholder="请输入会议日期" />
+        </li>
+        <li class="mui-table-view-cell">
+          <label>开始时间:</label>
+          <input type="time" id="input" class="inputStart" style="width:60%;" value="" placeholder="请输入会议开始时间" />
+        </li>
+        <li class="mui-table-view-cell">
+          <label>结束时间:</label>
+          <input type="time" id="input" class="inputEnd" style="width:60%;" value="" placeholder="请输入会议结束时间" />
+        </li>
+        <!-- <li class="mui-table-view-cell">
+          <label>预定人:</label>
+          <input type="text" id="input" style="width:60%;" value="" placeholder="请输入会议室预定人" />
+        </li> -->
+        <li class="mui-table-view-cell">
+          <label>是否签到:</label>
+          <label style="padding-left:1rem;">否</label>
+          <label style="padding-left:3.5rem;">是</label>
+        </li>
+        <li class="mui-table-view-cell">
+          <label>预期人数:</label>
+          <input type="text" id="input" class="num" style="width:60%;"  placeholder="请输入预期人数">
+        </li>
+      </ul>
+    </div>
+    <div id="order">
+      <button type="button" id="orderButton" class="mui-btn mui-btn-primary" onclick="orderMeeting()">预定</button>
+    </div>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript" src="../script/jquery-3.3.1.js"></script>
+  <script type="text/javascript" src="../script/common.js"></script>
+  <script type="text/javascript">
+      apiready = async function(){
+          var meeting;
+          console.log("房间号:"+api.pageParam.roomId);
+          getMeetingInfo(api.pageParam.roomId);
+          getSignBool();
+          getAuthorization();
+          this.meeting = await getAllMeeting();
+          console.log(makeMeetingArray(this.meeting));
+          selectMeeting();
+      };
+      //处理会议数组;
+      function makeMeetingArray(arr){
+        var newarr1 = [];
+        for(var i = 0; i < arr.length; i++) {
+          newarr1.push({"text":arr[i].id});
+        }
+        return newarr1;
+      };
+    //获取所有会议室;
+    async function getAllMeeting(){
+      let ret = await  ajax({
+          url: srchttp+'/api/room/selectAll',
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8',
+              'Authorization':api.getGlobalData({  key:"status" })
+          },
+          method: 'get',
+      });
+      console.log("meeting" + JSON.stringify(ret.data));
+      return ret.data;
+    };
+      //预定会议室下拉框;
+      function selectMeeting(){
+        if(api.pageParam.roomId !== undefined){
+            $("#NumValue").text(api.pageParam.roomId);
+        }else {
+          var UIMultiSelector = api.require('UIMultiSelector');
+          UIMultiSelector.open({
+            rect: {
+                h: 244
+            },
+            text: {
+                title: '选择会议室编号',
+                leftBtn: '取消',
+                rightBtn: '确定'
+            },
+            max: 0,
+            singleSelection: true,
+            styles: {
+                mask: 'rgba(0,0,0,0)',
+                title: {
+                    bg: 'rgb(0,64,128)',
+                    color: 'rgb(184,209,5)',
+                    size: 16,
+                    h: 44
+                },
+                leftButton: {
+                    w: 80,
+                    h: 35,
+                    marginT: 5,
+                    marginL: 8,
+                    color: 'rgb(0,0,0)',
+                    size: 14
+                },
+                rightButton: {
+                    w: 80,
+                    h: 35,
+                    marginT: 5,
+                    marginR: 8,
+                    color: 'rgb(14, 144, 210)',
+                    size: 14
+                },
+                item: {
+                    h: 35,
+                    bg: '#f2f2f2',
+                    bgActive: 'rgb(43,213,166)',
+                    bgHighlight: 'rgb(238,17,150)',
+                    color: 'rgb(22,112,233)',
+                    active: 'rgb(201,118,126)',
+                    highlight: 'rgb(255,255,0)',
+                    size: 14,
+                    lineColor: 'rgb(78,57,255)',
+                    textAlign: 'center'
+                },
+                icon: {
+                    w: 20,
+                    h: 20,
+                    marginT: 11,
+                    marginH: 8,
+                    bg: '#fff',
+                    align: 'left'
+                }
+            },
+            animation: true,
+            items: makeMeetingArray(this.meeting),
+        }, function(ret, err) {
+            if (ret.eventType == 'clickMask') {
+                UIMultiSelector.hide();
+            } else {
+                if(ret.eventType == 'clickRight'){
+                   $("#NumValue").text(ret.items[0].text);
+                   console.log(JSON.stringify(ret.items[0].text));
+                   UIMultiSelector.hide();
+                }else if(ret.eventType == 'clickLeft'){
+                  UIMultiSelector.hide();
+                }
+            }
+        });
+        }
+
+      };
+
+
+      function back(){
+        api.closeWin({
+            name: 'order'
+        });
+      };
+      function getMeetingInfo(info){
+        $("#meetingNum").append(info);
+      };
+      //预定会议;
+      function orderMeeting(){
+        if($("#inputStart").val() == ""||$("#inputEnd").val() == ""||$("#inputOri") == ""){
+          alert("请输入必要信息");
+        }else {
+          console.log("issigned:"+getSignBool());
+          //console.log("originator:"+typeof(parseInt($("#inputOri").val())));
+          console.log("Authorization:"+api.getGlobalData({key:"status"}));
+          console.log("theme:" + typeof($("#input").val()));
+          console.log("starttime:"+parseInt(timetostamp($('.inputDate').val()+" "+$(".inputStart").val())));
+          console.log("inputDate:"+$(".inputDate").val());
+          console.log("room"+typeof( $("#NumValue").text()));
+          api.ajax({
+              url: srchttp+'/api/meeting/add',
+              method: 'post',
+              headers: {
+                  'Content-Type': 'application/json;charset=utf-8',
+                  'Authorization':api.getGlobalData({  key:"status" })
+              },
+              data: {
+                body:{
+                  theme:$("#input").val(),
+                  starttime:parseInt(timetostamp($('.inputDate').val() +" " +$(".inputStart").val())),
+                  endtime:parseInt(timetostamp($('.inputDate').val() +" " +$(".inputEnd").val())),
+                  room:$("#NumValue").text(),
+                //originator:parseInt($("#inputOri").val()),
+                  issigned:parseInt(getSignBool()),
+                  size:parseInt($(".num").val())
+                }
+              }
+          },function(ret, err){
+              if (ret.code == 0) {
+                  alert("预定成功");
+                  api.openWin({
+                      name: 'index',
+                      url: './index.html',
+                  });
+              } else {
+                  alert("预定失败");
+              }
+          });
+        }
+      }
+      //yes , no 开关键;
+      function getSignBool(){
+        console.log("调用bool:");
+        var a = 1;
+        var switchBtn = api.require('UISwitchButton');
+        switchBtn.open({
+            id:'123',
+            state:true,
+            rect: {
+              x: 130,
+              y: 390,
+              w: 45,
+              h: 20
+            },
+            styles:{
+               bgCorner:15,
+               active:'rgb(14, 144, 210)' ,
+               inActive:'#0F0',
+               thumb:{
+                  active:'#FFF ',
+                  inActive:'#FFF ',
+                  size:30,
+                  corner:15
+               }
+            },
+            fixedOn: '',
+            fixed: true
+        }, function(ret) {
+            if(ret.state == true){
+
+            }else {
+              a =  0;
+            }
+        });
+        return a;
+      }
+      // function getJoinBool(){
+      //   console.log("调用bool:");
+      //   var b = 1;
+      //   var switchBtn = api.require('UISwitchButton');
+      //   switchBtn.open({
+      //       id:'12',
+      //       state:true,
+      //       rect: {
+      //         x: 170,
+      //         y: 520,
+      //         w: 45,
+      //         h: 20
+      //       },
+      //       styles:{
+      //          bgCorner:15,
+      //          active:'rgb(14, 144, 210)',
+      //          inActive:'#0F0',
+      //          thumb:{
+      //             active:'#FFF',
+      //             inActive:'#FFF',
+      //             size:30,
+      //             corner:15
+      //          }
+      //       },
+      //       fixedOn: '',
+      //       fixed: true
+      //   }, function(ret) {
+      //     if(ret.state == true){
+      //
+      //     }else {
+      //       b = 0;
+      //     }
+      //   });
+      //   return b;
+      //
+      // }
+  </script>
+  </html>
